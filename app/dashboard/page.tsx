@@ -24,7 +24,7 @@ export default function WelcomePage() {
         </p>
         <div className="bg-green-100 border-l-4 border-green-500 p-4 rounded">
           <p className="text-green-700">
-            Serás redirigido a la página principal en 5 segundos...
+            Serás redirigido a la página principal en 5 segundos... o tal vez menos, no funciona el timer.
           </p>
         </div>
       </div>

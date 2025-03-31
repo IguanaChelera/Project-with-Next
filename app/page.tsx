@@ -1,10 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
-//Estado de los campos de texto
-import { useState } from "react";
-//Rutas de navegación
 import { useRouter } from "next/navigation";
-//Estilos
 import Image from "next/image";
 
 type FormData = {
@@ -17,21 +13,28 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {
     if (data.username === "admin" && data.password === "1234") {
-      router.push("/welcome");
+      router.push("/dashboard"); // Redirección directa
+    } else {
+      setError("root", { 
+        type: "manual",
+        message: "Credenciales incorrectas"
+      });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        {/* Imagen con Next.js Image */}
         <div className="relative w-full h-48 mb-6 rounded-lg overflow-hidden">
           <Image
-            src="/enjambre-embajadores-zacatecas.jpg"
+            src="/enjambre-embajadores-zacatecas.jpg" // Asegúrate de tener esta imagen en /public
             alt="Login"
             fill
             className="object-cover"
@@ -43,29 +46,38 @@ export default function LoginPage() {
           Iniciar Sesión
         </h1>
 
+        {/* Mensaje de error general */}
+        {errors.root && (
+          <div className="mb-4 p-3 bg-red-50 border-l-4 border-red-500 rounded">
+            <p className="text-red-700">{errors.root.message}</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Campo de usuario con register */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Usuario
             </label>
             <input
-              {...register("username", {
+              {...register("username", { 
                 required: "El usuario es obligatorio",
+                minLength: {
+                  value: 3,
+                  message: "Mínimo 3 caracteres"
+                }
               })}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                errors.username
-                  ? "border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"
+                errors.username ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200"
               }`}
-              placeholder="Ingresa tu usuario"
+              placeholder=""
             />
             {errors.username && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.username.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
             )}
           </div>
 
+          {/* Campo de contraseña con register */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Contraseña
@@ -74,18 +86,18 @@ export default function LoginPage() {
               type="password"
               {...register("password", {
                 required: "La contraseña es obligatoria",
+                minLength: {
+                  value: 4,
+                  message: "Mínimo 4 caracteres"
+                }
               })}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:outline-none ${
-                errors.password
-                  ? "border-red-500 focus:ring-red-200"
-                  : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"
+                errors.password ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200"
               }`}
-              placeholder="Ingresa tu contraseña"
+              placeholder=""
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.password.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
             )}
           </div>
 
@@ -96,14 +108,6 @@ export default function LoginPage() {
             Ingresar
           </button>
         </form>
-
-        {(errors.username || errors.password) && (
-          <div className="mt-4 p-3 bg-red-50 border-l-4 border-red-500 rounded">
-            <p className="text-red-700">
-              Por favor completa todos los campos correctamente
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
